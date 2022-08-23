@@ -35,9 +35,13 @@ def scrape():
     soup = bs(html, 'html.parser')
     results = soup.find_all('a',class_='fancybox-thumbs')
     
+    spaceMars_image = []
+
     for result in results:
         featured_image_url = result['href']
-        print(featured_image_url)
+        spaceMars_image.append(f"{url}/{featured_image_url}")
+    
+    
     
       
     
@@ -71,18 +75,22 @@ def scrape():
         title = listing.find('a', class_="itemLink product-item").h3.text
     
     listings_2 = soup.find_all('div',class_='item')
+    hemisphere_image=[]
     for listing in listings_2:
         img_url = listing.find('img', class_='thumb')['src']
+        hem_img = f"{url}/{img_url}"
+        dic= {title:hem_img}
+        hemisphere_image.append(dic)
     
+    print("***********")
+    print(hemisphere_image)
+
     
-    hemisphere_image_urls = []
-    for i in range(4):
-        dic = {title:img_url}
-        hemisphere_image_urls.append(dic)
+
 
     py_dicts = {
-            'Hemisphere_Img': hemisphere_image_urls,
-            'JPL_Space_Img' : featured_image_url
+            'Hemisphere_Img': hemisphere_image,
+            'JPL_Space_Img' : spaceMars_image
 
         }
 
