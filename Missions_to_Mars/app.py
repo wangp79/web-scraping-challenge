@@ -1,3 +1,4 @@
+from re import I
 from flask import Flask, redirect, render_template
 import scrape_mars
 from flask_pymongo import PyMongo
@@ -11,7 +12,7 @@ Client = pymongo.MongoClient(conn)
 db = Client.mission_db
 
 
-# db.mission.drop()
+db.mission.mission.drop()
 
 @app.route('/')
 def index():
@@ -20,15 +21,23 @@ def index():
     for i in data_dict:
         data_list.append(i)
     
-    return render_template("index.html", py_dict=data_list)
+    return render_template("index.html", py_dictionary=data_list)
+
+@app.route('/table')
+def table():
+    return render_template('table.html')
 
 @app.route('/scrape')
 def scraper():
     py_dict = db.mission
     listings_data = scrape_mars.scrape()
-    py_dict.mission.update({}, listings_data, upsert=True)
+    print(len(listings_data))
+    for i in listings_data:
+        py_dict.mission.insert(i)
     return redirect("/", code=302)
 
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+ 

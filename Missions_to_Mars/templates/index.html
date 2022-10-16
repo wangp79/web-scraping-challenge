@@ -26,12 +26,13 @@
       <div class="row" id="listings">
         <div class="col-md-12">
           <h4 class="heading">
-            {% for dict in py_dict[0].Hemisphere_Img %}
+            {% for i in py_dictionary %}
+            <h3>{{i.image_title}}</h3>
             <img
-              src="{{dict['Valles Marineris Hemisphere Enhanced']}}"
+              src="{{i.Hemisphere_Img}}"
               alt=""
+              style="width: 500px; height: 500px"
             />
-
             <small>{% endfor %}</small>
           </h4>
         </div>

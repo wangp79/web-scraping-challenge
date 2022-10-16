@@ -23,7 +23,10 @@ def scrape():
     url = 'https://redplanetscience.com'
     browser.visit(url)
     soup = bs(browser.html,'html.parser')
-    title_1 = soup.find('div', class_= 'content_title')
+    news_title = soup.find('div', class_= 'content_title')
+    news_text = soup.find('div', class_='article_teaser_body')
+    print(news_title)
+    print(news_text)
 
     
     ### JPL Mars Space Images - Featured Image
@@ -34,6 +37,7 @@ def scrape():
     html = browser.html
     soup = bs(html, 'html.parser')
     results = soup.find_all('a',class_='fancybox-thumbs')
+
     
     spaceMars_image = []
 
@@ -42,8 +46,6 @@ def scrape():
         spaceMars_image.append(f"{url}/{featured_image_url}")
     
     
-    
-      
     
     ### Mars Facts
     url = 'https://galaxyfacts-mars.com'
@@ -69,30 +71,40 @@ def scrape():
     browser.visit(url)
     soup = bs(browser.html,'html.parser')
     
-    
+    titles = []
+    # contents = []
     listings_1 = soup.find_all('div', class_='description')
     for listing in listings_1:
         title = listing.find('a', class_="itemLink product-item").h3.text
+        content = listing.find('p',class_='description')
+        titles.append(title)
+    print(titles)
     
+
     listings_2 = soup.find_all('div',class_='item')
+
     hemisphere_image=[]
     for listing in listings_2:
-        img_url = listing.find('img', class_='thumb')['src']
+        img_url = listing.find('a', class_='itemLink product-item')['href']
+        # print(img_url)
         hem_img = f"{url}/{img_url}"
-        dic= {title:hem_img}
-        hemisphere_image.append(dic)
-    
-    print("***********")
-    print(hemisphere_image)
+        # print(hem_img)
+        browser.visit(hem_img)
+        soup_1 = bs(browser.html,'html.parser')
+        listing_3 = soup_1.find('img', class_='wide-image')['src']
+        final_url = f"{url}/{listing_3}"
+        # print(final_url)
+        hemisphere_image.append(final_url)
+        print(hemisphere_image)
 
-    
-
-
-    py_dicts = {
-            'Hemisphere_Img': hemisphere_image,
-            'JPL_Space_Img' : spaceMars_image
-
+    j = 0
+    py_list = []
+    for i in titles:
+        py_dicts = {
+            'Hemisphere_Img': hemisphere_image[j],
+            'image_title': i
         }
+        j=j+1
+        py_list.append(py_dicts)
 
-
-    return py_dicts
+    return py_list
